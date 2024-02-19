@@ -1,16 +1,25 @@
 
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { IsAlphanumeric, IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn, Not } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  firstName: string;
+  @Column({unique: true})
+  @IsNotEmpty()
+  username:string;
+
+  @Column({unique: true})
+  @IsEmail()
+  email: string;
 
   @Column()
-  lastName: string;
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  @MinLength(8)
+  password: string;
 
   @Column({ default: true })
   isActive: boolean;

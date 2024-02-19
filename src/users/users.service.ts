@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersService {
@@ -11,14 +12,14 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) { }
-  create(data: CreateUserDto) {
-
-    try {
-      const user = this.usersRepository.create(data);
-      return this.usersRepository.save(user);
-    } catch (e) {
-      console.log(e);
+  async create(data: CreateUserDto) {
+    const userExists = await this.usersRepository.findOne({ where: { username: data.username } });
+    if (userExists) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
+    data.password = await bcrypt.hash(data.password, 10);
+    const user =this.usersRepository.create(data);
+    return this.usersRepository.save(user);
   }
 
   findAll() {
@@ -33,7 +34,7 @@ export class UsersService {
   findOne(id: number) {
 
     try {
-      return this.usersRepository.findOne({where:{id}});
+      return this.usersRepository.findOne({ where: { id } });
     } catch (e) {
       console.log(e);
     }
@@ -42,7 +43,8 @@ export class UsersService {
   update(id: number, data: UpdateUserDto) {
 
     try {
-      return this.usersRepository.update({id}, data);
+      this.usersRepository.update({ id }, data);
+      return this.usersRepository.findOne({ where: { id } });
     } catch (e) {
       console.log(e);
     }
@@ -51,7 +53,7 @@ export class UsersService {
   remove(id: number) {
 
     try {
-      return this.usersRepository.delete({id});
+      return this.usersRepository.delete({ id });
     } catch (e) {
       console.log(e);
     }
