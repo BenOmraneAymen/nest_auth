@@ -1,11 +1,17 @@
-import { Prisma } from "@prisma/client";
-import { isEmail } from "class-validator";
 
-export class User implements Prisma.UserCreateInput {
-    id: number;
-    username: string;
-    email: string;
-    password: string;
-    isActive: boolean;
-    isSuspended:boolean;
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column({ default: true })
+  isActive: boolean;
 }
