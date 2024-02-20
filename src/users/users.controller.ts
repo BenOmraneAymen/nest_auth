@@ -3,12 +3,14 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserInterceptor } from './interceptors/user.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Post()
+  @UseInterceptors(ErrorInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
     let response = this.usersService.create(createUserDto);
     return response;
