@@ -23,7 +23,6 @@ export class UsersService {
   }
 
   findAll() {
-
     try {
       return this.usersRepository.find();
     } catch (e) {
@@ -32,7 +31,6 @@ export class UsersService {
   }
 
   findOne(id: number) {
-
     try {
       return this.usersRepository.findOne({ where: { id } });
     } catch (e) {
@@ -41,7 +39,6 @@ export class UsersService {
   }
 
   update(id: number, data: UpdateUserDto) {
-
     try {
       this.usersRepository.update({ id }, data);
       return this.usersRepository.findOne({ where: { id } });
@@ -51,7 +48,6 @@ export class UsersService {
   }
 
   remove(id: number) {
-
     try {
       return this.usersRepository.delete({ id });
     } catch (e) {

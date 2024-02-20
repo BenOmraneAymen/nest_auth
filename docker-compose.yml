@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  db:
+    container_name: db
+    image: postgres
+    ports:
+      - "8000:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - auth_network
+    restart: unless-stopped  
+  auth:
+    container_name: auth
+    build: ./
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - auth_network
+    restart: unless-stopped
+networks:
+  auth_network:
+    driver: bridge

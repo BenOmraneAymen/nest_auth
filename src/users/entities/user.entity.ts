@@ -1,4 +1,5 @@
 
+import { Exclude } from 'class-transformer';
 import { IsAlphanumeric, IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, Not } from 'typeorm';
 
@@ -19,6 +20,7 @@ export class User {
   @IsNotEmpty()
   @IsAlphanumeric()
   @MinLength(8)
+  @Exclude()
   password: string;
 
   @Column({ default: true })
