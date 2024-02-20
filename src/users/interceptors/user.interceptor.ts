@@ -8,10 +8,15 @@ export class UserInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    console.log('Before...');
-    const now = Date.now();
-    return next
-      .handle()
-      .pipe(map((data) => data.map((user:User) => plainToInstance(User, user))));
+    console.log;
+    return next.handle().pipe(
+      map((data) => {
+        if (data instanceof User) {
+          return plainToInstance(User, data);
+        } else if (Array.isArray(data) && data[0] instanceof User) {
+          return data.map((user: User) => plainToInstance(User, user));
+        }
+      }),
+    );
   }
 }
