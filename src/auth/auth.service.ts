@@ -13,7 +13,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {}
 
   async login(data: AuthDto) {
@@ -23,24 +23,28 @@ export class AuthService {
     if (!user) {
       return 'User not found';
     }
-    if (!bcrypt.compare(data.password, user.password)) {
+    let valid = await bcrypt.compare(data.password, user.password);
+    if (!valid) {
       return 'Invalid password';
     }
-    let token = this.jwtService.sign({id:user.id});
-    return { token:token };
+    let token = this.jwtService.sign({ id: user.id });
+    let refresh = this.jwtService.sign({ id: user.id }, { expiresIn: '7d' });
+    return { AccessToken: token, refreshToken: refresh };
   }
 
-  async verify(req: Request){
-    const token = req.headers['authorization'] ;
-    if(!token){
+  async verify(req: Request) {
+    const token = req.headers['authorization'];
+    if (!token) {
       throw new HttpException('Token not found', 404);
     }
-    try{
-      const user = this.jwtService.verify(token,this.configService.get('JWT_SECRET'));
+    try {
+      const user = this.jwtService.verify(
+        token,
+        this.configService.get('JWT_SECRET'),
+      );
       return user;
-    }catch(e){
+    } catch (e) {
       throw new HttpException('Invalid token', 404);
     }
   }
-
 }

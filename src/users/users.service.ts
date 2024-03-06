@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
@@ -33,6 +33,14 @@ export class UsersService {
   findOne(id: number) {
     try {
       return this.usersRepository.findOne({ where: { id } });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  findByEmail(email: string) {
+    try {
+      return this.usersRepository.findOne({ where: { email } });
     } catch (e) {
       console.log(e);
     }

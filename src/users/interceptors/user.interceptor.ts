@@ -8,7 +8,6 @@ export class UserInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    console.log;
     return next.handle().pipe(
       map((data) => {
         if (data instanceof User) {

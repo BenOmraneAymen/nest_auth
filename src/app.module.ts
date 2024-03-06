@@ -7,6 +7,8 @@ import { User } from './users/entities/user.entity';
 import { log } from 'console';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     AuthModule,
+    MailerModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
